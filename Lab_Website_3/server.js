@@ -186,6 +186,60 @@ app.get('/team_stats', function(req, res) {
 	});
 });
 
+//Player Info
+app.get('/player_info', function(req, res) {
+	var query = 'SELECT id, name FROM football_players;';
+	db.any(query)
+		.then(function (rows) {
+			res.render('pages/player_info',{
+				my_title: "Player Information",
+				data: rows,
+			})
+	
+		})
+		.catch(function (err) {
+			// display error message in case an error
+			console.log('error', err);
+			res.render('pages/player_info',{
+				my_title: "Player Information",
+				data: '',
+			})
+		})
+});
+
+//Select Player
+app.get('/player_info/post', function(req,res){
+	var player_id = req.query.player_choice;
+	var query1 = 'SELECT id, name FROM football_players;';
+	var query2 = "SELECT * FROM football_players WHERE id = '" + player_id + "';";
+	var query3 = 'SELECT COUNT(*) FROM football_games;';
+	db.task('get-everything', task => {
+		return task.batch([
+			task.any(query1),
+			task.any(query2),
+			task.any(query3)
+		]);
+	})
+	.then(data => {
+		res.render('pages/player_info',{
+				my_title: "Player Information",
+				data: data[0],
+				selected_info: data[1],
+				selected_games_played: data[2]
+			})
+	})
+	.catch(err => {
+		// display error message in case an error
+			console.log('error', err);
+			res.render('pages/player_info',{
+				my_title: "Player Information",
+				data: '',
+				selected_info: '',
+				selected_games_played: ''
+			})
+	});
+});
+
 app.post('/home/pick_color', function(req, res) {
 	var color_hex = req.body.color_hex;
 	var color_name = req.body.color_name;

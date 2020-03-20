@@ -14,10 +14,20 @@
 				  <div class="card-body mx-auto">
 					<form class="form"action="/player_info/post" method="get">
 						<select class="custom-select" name="player_choice" onchange="this.form.submit()">
-							 <option selected>Select Player</option>
-							 <!-- TODO: Populate our select with player options
+							<option selected>Select Player</option>
+							<!-- TODO: Populate our select with player options
 							 			For each player, set a new option with a value matching the palyer's id, 
-							 			but will display the player's name-->
+										 but will display the player's name-->
+							<%
+							if (data) {
+								var player_options = '';
+								data.forEach(function(item){
+									player_options += '<option value="' + item.id + '">';
+									player_options += item.name;
+									player_options += '</option>';
+								}); %>
+								<%- player_options %>
+							<% } %>
 						</select>
 					</form>
 				  </div>
@@ -31,7 +41,7 @@
 							 			If a player has been selected, fill in their information in each of the fields below.
 							 		    You'll need to calculate here the player's average rushing, receiving, and passing yards.-->
 							<th>Year</th>
-							<td>	</td>
+							<td>    </td>
 						</tr>
 						<tr>
 							<th>Major</th>
